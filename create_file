@@ -1,0 +1,47 @@
+# creating a file in /tmp
+---
+- hosts: web
+  tasks:
+   - name: Create a file
+     file:
+      path: /tmp/myfile.txt 
+      state: touch
+  
+  # Testing for the connectivity of a server
+  ---
+- hosts: web
+  gather_facts: yes
+  remote_user: ansible
+  tasks:
+    - name: Test connection
+      ping:
+      remote_user: ansible
+
+# How to use the copy module
+---
+ - hosts: web
+   become: true
+   tasks:
+     - name: Copy ansible inventory file to all host machines
+       copy: src=/etc/ansible/hosts 
+             dest=/tmp/  
+             owner=root 
+             group=root 
+             mode=0666
+                
+#This playbbok will install HTTP server,wget and vim package using loops. Also see the use of variables {{item}} + with_items : best use [ ]
+
+---
+- hosts: web
+  become: true
+  tasks:
+    - name: Install list of packages
+      yum: name='{{item}}' state=present
+      with_items:
+       - httpd
+       - wget
+       - vim
+       - zip
+       - unzip 
+  
+  #
