@@ -16,6 +16,23 @@
     - name: Test connection
       ping:
       remote_user: ansible
+      
+ # How to use the file module to create ssh key file
+ ---
+- hosts: all
+  tasks:
+  - name: make direcotry
+    file:
+      path: "/home/<username>/.ssh"
+      state: directory
+  - name: create empty file
+    file:
+      path: "/home/<username>/.ssh/authorized_keys"
+      state: touch
+  - name: put pubkey
+    lineinfile:
+      path: "/home/<username>/.ssh/authorized_keys"
+      line: "{{ pubkey }}"
 
 # How to use the copy module
 ---
