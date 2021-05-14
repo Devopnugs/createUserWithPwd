@@ -1,0 +1,39 @@
+# Install http server
+---
+- hosts: web
+  become: true
+  tasks:
+    - name: Install Apache HTTP server
+      yum: name=httpd state=latest
+      
+   ==========
+   
+#This playbbok will install HTTP server and start the server.
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install Apache HTTP server
+      yum: name=httpd update_cache=yes state=latest
+    - name: Start HTTP Server
+      service: name=httpd enabled=yes state=started
+    - name: Insert Index Page
+      template:
+       src: index.html
+       dest: /var/www/html/index.html
+       
+#This play book will explains handlers as well. we use notify with handlers b/c the tasks has to notify the handlers if there is a change
+# very iimportant handlers will only run once
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install Apache HTTP Server
+      yum: name=httpd update_cache=yes state=latest
+      notify:
+        - Start HTTP Server
+  handlers:
+    - name: Start HTTP Server
+      service:
+          name=httpd
+          state=restarted
